@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ka">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ნეიროფსიქოლოგიური დასკვნა</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+
+    <h1>ნეიროფსიქოლოგიური დასკვნის გენერატორი</h1>
+
+    <div class="form-buttons">
+        <button onclick="collapseAll()">ყველას დამალვა</button>
+        <button onclick="expandAll()">ყველას გამოჩენა</button>
+        <button onclick="uncheckAll()">ყველას მოხსნა</button>
+        <button onclick="generateConclusion()">დასკვნის გენერაცია</button>
+    </div>
+
+    <div id="form"></div>
+
+    <!-- STICKY OUTPUT -->
+    <div class="sticky-output">
+        <!-- <div class="form-buttons">
+            <button onclick="generateConclusion()">დასკვნის გენერაცია</button>
+        </div> -->
+        <textarea id="output" placeholder="დასკვნა აქ გამოჩნდება..."></textarea>
+    </div>
+
+    <script>
+        let TEMPLATE_DATA = null;
+
+        fetch("templates.json")
+            .then(res => res.json())
+            .then(data => {
+                TEMPLATE_DATA = data;
+                renderForm();
+            });
+
+        function renderForm() {
+            const container = document.getElementById("form");
+            container.innerHTML = "";
+
+            TEMPLATE_DATA.categories
+                .sort((a, b) => a.order - b.order)
+                .forEach(category => {
+
+                    const catDiv = document.createElement("div");
+                    catDiv.className = "category";
+
+                    const catTitle = document.createElement("h2");
+                    catTitle.textContent = category.label;
+
+                    const catContent = document.createElement("div");
+                    catTitle.onclick = () => catContent.classList.toggle("hidden");
+
+                    category.subcategories
+                        .sort((a, b) => a.order - b.order)
+                        .forEach(sub => {
+
+                            const subDiv = document.createElement("div");
+                            subDiv.className = "subcategory";
+
+                            const subTitle = document.createElement("h3");
+                            subTitle.textContent = sub.label;
+
+                            const phrasesDiv = document.createElement("div");
+                            phrasesDiv.className = "phrases";
+
+                            subTitle.onclick = () => phrasesDiv.classList.toggle("hidden");
+
+                            sub.phrases.forEach((phrase, index) => {
+                                const label = document.createElement("label");
+
+                                const checkbox = document.createElement("input");
+                                checkbox.type = "checkbox";
+                                checkbox.dataset.text = phrase.text;
+                                checkbox.dataset.order =
+                                    `${category.order}.${sub.order}.${index}`;
+
+                                checkbox.addEventListener("change", updateLiveConclusion);
+
+                                label.appendChild(checkbox);
+                                label.append(" " + phrase.text);
+
+                                phrasesDiv.appendChild(label);
+                            });
+
+                            subDiv.appendChild(subTitle);
+                            subDiv.appendChild(phrasesDiv);
+                            catContent.appendChild(subDiv);
+                        });
+
+                    catDiv.appendChild(catTitle);
+                    catDiv.appendChild(catContent);
+                    container.appendChild(catDiv);
+                });
+        }
+
+        function updateLiveConclusion() {
+            const selected = Array.from(
+                document.querySelectorAll("input[type=checkbox]:checked")
+            );
+
+            const result = selected
+                .sort((a, b) => a.dataset.order.localeCompare(b.dataset.order))
+                .map(cb => cb.dataset.text)
+                .join("");
+
+            document.getElementById("output").value = result;
+        }
+
+        function generateConclusion() {
+            updateLiveConclusion();
+        }
+
+        function collapseAll() {
+            document
+                .querySelectorAll("#form .category > div, #form .phrases")
+                .forEach(el => el.classList.add("hidden"));
+        }
+
+        function expandAll() {
+            document
+                .querySelectorAll("#form .category > div, #form .phrases")
+                .forEach(el => el.classList.remove("hidden"));
+        }
+
+        function uncheckAll() {
+            document
+                .querySelectorAll("input[type=checkbox]")
+                .forEach(cb => cb.checked = false);
+
+            document.getElementById("output").value = "";
+        }
+    </script>
+
+</body>
+
+</html>

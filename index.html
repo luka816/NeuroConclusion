@@ -4,136 +4,342 @@
 <head>
     <meta charset="UTF-8">
     <title>ნეიროფსიქოლოგიური დასკვნა</title>
-    <link rel="stylesheet" href="style.css">
+
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --primary-hover: #155ab6;
+            --secondary: #e0e0e0;
+            --text: #333;
+            --bg: #f9f9f9;
+            --card: #fff;
+            --border: #cfd8dc;
+            --cat-bg: #e0f0ff;
+            --sub-bg: #f0f4ff;
+        }
+
+        [data-theme="dark"] {
+            --primary: #4285f4;
+            --primary-hover: #2a56c6;
+            --secondary: #555;
+            --text: #eee;
+            --bg: #181818;
+            --card: #242424;
+            --border: #555;
+            --cat-bg: #2a3b4f;
+            --sub-bg: #37485d;
+        }
+
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            max-width: 900px;
+            margin: 20px auto;
+            padding-bottom: 220px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary);
+        }
+
+        h2,
+        h3 {
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            user-select: none;
+        }
+
+        h2 {
+            background: var(--cat-bg);
+        }
+
+        h3 {
+            background: var(--sub-bg);
+            margin-left: 12px;
+        }
+
+        h2:hover,
+        h3:hover {
+            background: var(--primary-hover);
+            color: #fff;
+        }
+
+        .arrow {
+            display: inline-block;
+            width: 1em;
+            margin-right: 6px;
+        }
+
+        .category {
+            margin-bottom: 18px;
+        }
+
+        /* BIG CATEGORY — NO ANIMATION */
+        .category-content {
+            display: none;
+            margin-left: 12px;
+            border-left: 2px solid var(--border);
+            padding-left: 10px;
+        }
+
+        /* SUBCATEGORY — ANIMATED */
+        .phrases {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height .3s ease;
+            margin-left: 12px;
+            border-left: 2px solid var(--border);
+            padding-left: 10px;
+        }
+
+        .subcategory {
+            margin-bottom: 0px;
+        }
+
+        .subcategory {
+            margin-bottom: 14px;
+        }
+
+        .subcategory h3 {
+            margin: 0;
+            padding: 6px 12px;
+        }
+
+
+        label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+        }
+
+        input[type=checkbox] {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--primary);
+            border-radius: 4px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        input[type=checkbox]:checked {
+            background: var(--primary);
+        }
+
+        input[type=checkbox]:checked::after {
+            content: "✔";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+        }
+
+        .form-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .primary {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .secondary {
+            background: var(--secondary);
+            color: var(--text);
+        }
+
+        textarea {
+            flex: 1;
+            min-height: 120px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--text);
+            resize: vertical;
+        }
+
+        .sticky-output {
+            position: sticky;
+            bottom: 0;
+            display: flex;
+            gap: 8px;
+            background: var(--card);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, .25);
+        }
+
+        .sticky-output {
+            position: sticky;
+            bottom: 0;
+            display: flex;
+            gap: 8px;
+            background: var(--card);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, .25);
+        }
+
+        /* TOAST */
+        .copy-toast {
+            position: absolute;
+            top: -42px;
+            /* appears above textarea */
+            left: 40%;
+            background: var(--primary);
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            opacity: 0;
+            transform: translateY(10px);
+            pointer-events: none;
+            transition: opacity .3s ease, transform .3s ease;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, .25);
+            z-index: 10;
+        }
+
+        .copy-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
 </head>
 
-
-<body>
+<body data-theme="light">
 
     <h1>ნეიროფსიქოლოგიური დასკვნის გენერატორი</h1>
 
     <div class="form-buttons">
-        <button onclick="collapseAll()">ყველას დამალვა</button>
-        <button onclick="expandAll()">ყველას გამოჩენა</button>
-        <button onclick="uncheckAll()">ყველას მოხსნა</button>
-        <button onclick="generateConclusion()">დასკვნის გენერაცია</button>
+        <button class="secondary" onclick="collapseAll()">ყველას დამალვა</button>
+        <button class="secondary" onclick="expandAll()">ყველას გამოჩენა</button>
+        <button class="secondary" onclick="uncheckAll()">ყველას მოხსნა</button>
+        <button class="primary" onclick="generateConclusion()">დასკვნის გენერაცია</button>
+        <button class="secondary" onclick="toggleDarkMode()">Dark Mode</button>
     </div>
+
 
     <div id="form"></div>
 
-    <!-- STICKY OUTPUT -->
     <div class="sticky-output">
-        <!-- <div class="form-buttons">
-            <button onclick="generateConclusion()">დასკვნის გენერაცია</button>
-        </div> -->
+        <div id="copyToast" class="copy-toast">
+            ✅ დაკოპირებულია!
+        </div>
         <textarea id="output" placeholder="დასკვნა აქ გამოჩნდება..."></textarea>
+        <button class="primary" onclick="copyToClipboard()">კოპირება</button>
     </div>
 
     <script>
-        let TEMPLATE_DATA = null;
-
         fetch("templates.json")
-            .then(res => res.json())
-            .then(data => {
-                TEMPLATE_DATA = data;
-                renderForm();
-            });
+            .then(r => r.json())
+            .then(data => renderForm(data));
 
-        function renderForm() {
-            const container = document.getElementById("form");
-            container.innerHTML = "";
+        function renderForm(data) {
+            const form = document.getElementById("form");
 
-            TEMPLATE_DATA.categories
-                .sort((a, b) => a.order - b.order)
-                .forEach(category => {
+            data.categories.sort((a, b) => a.order - b.order).forEach(cat => {
+                const c = document.createElement("div");
+                c.className = "category";
 
-                    const catDiv = document.createElement("div");
-                    catDiv.className = "category";
+                const h2 = document.createElement("h2");
+                h2.innerHTML = `<span class="arrow">▶</span>${cat.label}`;
 
-                    const catTitle = document.createElement("h2");
-                    catTitle.textContent = category.label;
+                const content = document.createElement("div");
+                content.className = "category-content";
 
-                    const catContent = document.createElement("div");
-                    catTitle.onclick = () => catContent.classList.toggle("hidden");
+                h2.onclick = () => {
+                    const open = content.style.display === "block";
+                    content.style.display = open ? "none" : "block";
+                    h2.querySelector(".arrow").textContent = open ? "▶" : "▼";
+                };
 
-                    category.subcategories
-                        .sort((a, b) => a.order - b.order)
-                        .forEach(sub => {
+                cat.subcategories.sort((a, b) => a.order - b.order).forEach(sub => {
+                    const s = document.createElement("div");
+                    s.className = "subcategory";
 
-                            const subDiv = document.createElement("div");
-                            subDiv.className = "subcategory";
+                    const h3 = document.createElement("h3");
+                    h3.innerHTML = `<span class="arrow">▶</span>${sub.label}`;
 
-                            const subTitle = document.createElement("h3");
-                            subTitle.textContent = sub.label;
+                    const phrases = document.createElement("div");
+                    phrases.className = "phrases";
 
-                            const phrasesDiv = document.createElement("div");
-                            phrasesDiv.className = "phrases";
+                    h3.onclick = () => {
+                        const open = phrases.style.maxHeight && phrases.style.maxHeight !== "0px";
+                        phrases.style.maxHeight = open ? "0px" : phrases.scrollHeight + "px";
+                        h3.querySelector(".arrow").textContent = open ? "▶" : "▼";
+                    };
 
-                            subTitle.onclick = () => phrasesDiv.classList.toggle("hidden");
+                    sub.phrases.forEach((p, i) => {
+                        const lbl = document.createElement("label");
+                        const cb = document.createElement("input");
+                        cb.type = "checkbox";
+                        cb.dataset.text = p.text;
+                        cb.dataset.order = `${cat.order}.${sub.order}.${i}`;
+                        cb.onchange = updateOutput;
+                        lbl.append(cb, " " + p.text);
+                        phrases.appendChild(lbl);
+                    });
 
-                            sub.phrases.forEach((phrase, index) => {
-                                const label = document.createElement("label");
-
-                                const checkbox = document.createElement("input");
-                                checkbox.type = "checkbox";
-                                checkbox.dataset.text = phrase.text;
-                                checkbox.dataset.order =
-                                    `${category.order}.${sub.order}.${index}`;
-
-                                checkbox.addEventListener("change", updateLiveConclusion);
-
-                                label.appendChild(checkbox);
-                                label.append(" " + phrase.text);
-
-                                phrasesDiv.appendChild(label);
-                            });
-
-                            subDiv.appendChild(subTitle);
-                            subDiv.appendChild(phrasesDiv);
-                            catContent.appendChild(subDiv);
-                        });
-
-                    catDiv.appendChild(catTitle);
-                    catDiv.appendChild(catContent);
-                    container.appendChild(catDiv);
+                    s.append(h3, phrases);
+                    content.appendChild(s);
                 });
-        }
 
-        function updateLiveConclusion() {
-            const selected = Array.from(
-                document.querySelectorAll("input[type=checkbox]:checked")
-            );
-
-            const result = selected
-                .sort((a, b) => a.dataset.order.localeCompare(b.dataset.order))
-                .map(cb => cb.dataset.text)
-                .join("");
-
-            document.getElementById("output").value = result;
-        }
-
-        function generateConclusion() {
-            updateLiveConclusion();
-        }
-
-        function collapseAll() {
-            document
-                .querySelectorAll("#form .category > div, #form .phrases")
-                .forEach(el => el.classList.add("hidden"));
+                c.append(h2, content);
+                form.appendChild(c);
+            });
         }
 
         function expandAll() {
-            document
-                .querySelectorAll("#form .category > div, #form .phrases")
-                .forEach(el => el.classList.remove("hidden"));
+            document.querySelectorAll(".category-content").forEach(c => c.style.display = "block");
+            document.querySelectorAll(".phrases").forEach(p => p.style.maxHeight = p.scrollHeight + "px");
+            document.querySelectorAll(".arrow").forEach(a => a.textContent = "▼");
         }
 
-        function uncheckAll() {
-            document
-                .querySelectorAll("input[type=checkbox]")
-                .forEach(cb => cb.checked = false);
+        function collapseAll() {
+            document.querySelectorAll(".category-content").forEach(c => c.style.display = "none");
+            document.querySelectorAll(".phrases").forEach(p => p.style.maxHeight = "0px");
+            document.querySelectorAll(".arrow").forEach(a => a.textContent = "▶");
+        }
 
-            document.getElementById("output").value = "";
+        function updateOutput() {
+            output.value = [...document.querySelectorAll("input:checked")]
+                .sort((a, b) => a.dataset.order.localeCompare(b.dataset.order))
+                .map(c => c.dataset.text).join("");
+        }
+
+        function generateConclusion() { updateOutput(); }
+        function uncheckAll() { document.querySelectorAll("input").forEach(c => c.checked = false); output.value = ""; }
+        function copyToClipboard() {
+            navigator.clipboard.writeText(output.value).then(() => {
+                const toast = document.getElementById("copyToast");
+                toast.classList.add("show");
+
+                setTimeout(() => {
+                    toast.classList.remove("show");
+                }, 1500);
+            });
+        }
+
+        function toggleDarkMode() {
+            document.body.dataset.theme = document.body.dataset.theme === "dark" ? "light" : "dark";
         }
     </script>
 

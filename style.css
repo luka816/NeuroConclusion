@@ -1,128 +1,215 @@
-    /* ---------- BODY & FONT ---------- */
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f9f9f9;
-        color: #333;
-        margin: 20px auto;
-        max-width: 900px;
-        line-height: 1.6;
-    }
+:root {
+    --primary: #1a73e8;
+    --primary-hover: #155ab6;
+    --secondary: #e0e0e0;
+    --text: #333;
+    --bg: #f9f9f9;
+    --card: #fff;
+    --border: #cfd8dc;
+    --cat-bg: #e0f0ff;
+    --sub-bg: #f0f4ff;
+}
 
-    h1 {
-        text-align: center;
-        color: #1a73e8;
-        margin-bottom: 20px;
-    }
+[data-theme="dark"] {
+    --primary: #4285f4;
+    --primary-hover: #2a56c6;
+    --secondary: #555;
+    --text: #eee;
+    --bg: #181818;
+    --card: #242424;
+    --border: #555;
+    --cat-bg: #2a3b4f;
+    --sub-bg: #37485d;
+}
 
-    h2,
-    h3 {
-        margin-top: 15px;
-        margin-bottom: 5px;
-    }
+body {
+    font-family: "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    max-width: 900px;
+    margin: 20px auto;
+    padding-bottom: 220px;
+}
 
-    h2 {
-        font-size: 1.5em;
-        cursor: pointer;
-        padding: 8px 12px;
-        background-color: #e0f0ff;
-        border-radius: 8px;
-        transition: background 0.3s;
-    }
+h1 {
+    text-align: center;
+    color: var(--primary);
+}
 
-    h2:hover {
-        background-color: #c2e0ff;
-    }
+h2,
+h3 {
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    user-select: none;
+}
 
-    h3 {
-        font-size: 1.2em;
-        cursor: pointer;
-        padding: 6px 10px;
-        background-color: #f0f4ff;
-        border-radius: 6px;
-        margin-left: 10px;
-        transition: background 0.3s;
-    }
+h2 {
+    background: var(--cat-bg);
+}
 
-    h3:hover {
-        background-color: #d6e0ff;
-    }
+h3 {
+    background: var(--sub-bg);
+    margin-left: 12px;
+}
 
-    /* ---------- CONTAINERS ---------- */
-    .category,
-    .subcategory {
-        margin-bottom: 10px;
-    }
+h2:hover,
+h3:hover {
+    background: var(--primary-hover);
+    color: #fff;
+}
 
-    .phrases {
-        margin-left: 30px;
-        padding-left: 10px;
-        border-left: 2px solid #c2dfff;
-    }
+.arrow {
+    display: inline-block;
+    width: 1em;
+    margin-right: 6px;
+}
 
-    label {
-        display: block;
-        padding: 4px 0;
-        font-size: 15px;
-    }
+.category {
+    margin-bottom: 18px;
+}
 
-    input[type="checkbox"] {
-        transform: scale(1.1);
-        margin-right: 6px;
-        accent-color: #1a73e8;
-    }
+/* BIG CATEGORY — NO ANIMATION */
+.category-content {
+    display: none;
+    margin-left: 12px;
+    border-left: 2px solid var(--border);
+    padding-left: 10px;
+}
 
-    /* ---------- BUTTONS ---------- */
-    button {
-        margin: 8px 4px 8px 0;
-        padding: 10px 16px;
-        font-size: 15px;
-        font-weight: 500;
-        cursor: pointer;
-        border: none;
-        border-radius: 6px;
-        background-color: #1a73e8;
-        color: white;
-        transition: background 0.3s, transform 0.1s;
-    }
+/* SUBCATEGORY — ANIMATED */
+.phrases {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height .3s ease;
+    margin-left: 12px;
+    border-left: 2px solid var(--border);
+    padding-left: 10px;
+}
 
-    button:hover {
-        background-color: #155ab6;
-        transform: scale(1.03);
-    }
+.subcategory {
+    margin-bottom: 0px;
+}
 
-    button:active {
-        transform: scale(0.98);
-    }
+.subcategory {
+    margin-bottom: 14px;
+}
 
-    /* ---------- TEXTAREA ---------- */
-    textarea {
-        width: 100%;
-        height: 100px;
-        margin-top: 15px;
-        font-size: 15px;
-        padding: 10px;
-        border-radius: 8px;
-        border: 1px solid #cfd8dc;
-        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-        resize: vertical;
-        background-color: #ffffff;
-    }
+.subcategory h3 {
+    margin: 0;
+    padding: 6px 12px;
+}
 
-    /* ---------- STICKY OUTPUT ---------- */
-    .sticky-output {
-        position: sticky;
-        bottom: 10px;
-        background: #f9f9f9;
-        padding-top: 10px;
-        z-index: 100;
-    }
 
-    /* ---------- HIDDEN ---------- */
-    .hidden {
-        display: none;
-    }
+label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+}
 
-    /* ---------- FORM BUTTONS CONTAINER ---------- */
-    .form-buttons {
-        margin-bottom: 20px;
-    }
+input[type=checkbox] {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--primary);
+    border-radius: 4px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+input[type=checkbox]:checked {
+    background: var(--primary);
+}
+
+input[type=checkbox]:checked::after {
+    content: "✔";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+}
+
+.form-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.primary {
+    background: var(--primary);
+    color: #fff;
+}
+
+.secondary {
+    background: var(--secondary);
+    color: var(--text);
+}
+
+textarea {
+    flex: 1;
+    min-height: 120px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    resize: vertical;
+}
+
+.sticky-output {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    gap: 8px;
+    background: var(--card);
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .25);
+}
+
+.sticky-output {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    gap: 8px;
+    background: var(--card);
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .25);
+}
+
+/* TOAST */
+.copy-toast {
+    position: absolute;
+    top: -42px;
+    /* appears above textarea */
+    left: 40%;
+    background: var(--primary);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+    transition: opacity .3s ease, transform .3s ease;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .25);
+    z-index: 10;
+}
+
+.copy-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}

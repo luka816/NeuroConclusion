@@ -213,3 +213,9 @@ textarea {
     opacity: 1;
     transform: translateY(0);
 }
+
+.plus-highlight {
+    color: red;
+    font-size: 1.5em;
+    font-weight: bold;
+}

@@ -27,12 +27,12 @@
         <div id="copyToast" class="copy-toast">
             ✅ დაკოპირებულია!
         </div>
-        <textarea id="output" placeholder="დასკვნა აქ გამოჩნდება..."></textarea>
+        <textarea id="output" placeholder="დასკვნა ..."></textarea>
         <button class="primary" onclick="copyToClipboard()">კოპირება</button>
     </div>
 
     <script>
-        fetch("templates.json")
+        fetch("templates/templates.json")
             .then(r => r.json())
             .then(data => renderForm(data));
 
@@ -78,7 +78,14 @@
                         cb.dataset.text = p.text;
                         cb.dataset.order = `${cat.order}.${sub.order}.${i}`;
                         cb.onchange = updateOutput;
-                        lbl.append(cb, " " + p.text);
+
+                        const textSpan = document.createElement("span");
+
+                        // Replace every "+" with a styled span
+                        textSpan.innerHTML = p.text.replace(/\+/g, '<span class="plus-highlight">+</span>');
+
+                        lbl.append(cb, " ", textSpan);
+
                         phrases.appendChild(lbl);
                     });
 
@@ -125,6 +132,17 @@
         function toggleDarkMode() {
             document.body.dataset.theme = document.body.dataset.theme === "dark" ? "light" : "dark";
         }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === '1') {
+                expandAll()
+            } else if (event.key === '2') {
+                collapseAll()
+            }
+            else if (event.key === '3') {
+                uncheckAll()
+            }
+        });
     </script>
 
 </body>

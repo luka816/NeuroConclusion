@@ -110,11 +110,23 @@
             document.querySelectorAll(".arrow").forEach(a => a.textContent = "▶");
         }
 
-        function updateOutput() {
+        /* function updateOutput() {
             output.value = [...document.querySelectorAll("input:checked")]
                 .sort((a, b) => a.dataset.order.localeCompare(b.dataset.order))
                 .map(c => c.dataset.text).join("");
+        } */
+        function updateOutput(e) {
+            const text = e.target.dataset.text;
+
+            if (e.target.checked) {
+                // add text
+                output.value += text;
+            } else {
+                // remove text
+                output.value = output.value.replace(text, "");
+            }
         }
+
 
         function generateConclusion() { updateOutput(); }
         function uncheckAll() { document.querySelectorAll("input").forEach(c => c.checked = false); output.value = ""; }
